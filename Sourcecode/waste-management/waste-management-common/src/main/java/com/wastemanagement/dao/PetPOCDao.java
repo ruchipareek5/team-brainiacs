@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.skill.India.common.AbstractTransactionalDao;
-import com.skill.India.config.PetPOCConfigSql;
-import com.skill.India.dto.PetDto;
+import com.wastemanagement.common.AbstractTransactionalDao;
+import com.wastemanagement.config.PetPOCConfigSql;
+import com.wastemanagement.dto.PetDto;
+
+
 
 @Repository
 public class PetPOCDao extends AbstractTransactionalDao {
@@ -31,9 +33,8 @@ public class PetPOCDao extends AbstractTransactionalDao {
 
 	public int  insertPOC() {
 		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("lastName", "Chawla");
-		parameters.put("firstName", "Achin");
-		parameters.put("age", 10);
+		parameters.put("lastName", "Pareek");
+		parameters.put("firstName", "Ruchi");
 		return insert(config.getInsertSql(), parameters, "ID");
 	}
 		
@@ -47,8 +48,6 @@ public class PetPOCDao extends AbstractTransactionalDao {
 			String name = resultSet.getString("name");
 			String owner = resultSet.getString("owner");
 			String species = resultSet.getString("species");
-			String sex = resultSet.getString("sex");
-
 			Timestamp birth = resultSet.getTimestamp("birth");
 			Timestamp death = resultSet.getTimestamp("death");
 

@@ -1,4 +1,4 @@
-package com.skill.India.common;
+package com.wastemanagement.common;
 
 import org.jasypt.util.text.BasicTextEncryptor;
 
@@ -19,7 +19,7 @@ public class PasswordUtils {
 	}
 	
 	public static void main(String[] args) {
-		System.out.println(encrypt("skillIndia","ScGjApp123$$"));
+		System.out.println(encrypt("wasteManagement","nAgArNiGaM123$$"));
 	}
 	
 }

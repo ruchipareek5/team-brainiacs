@@ -2,7 +2,8 @@ package com.wastemanagement.dto;
 
 import java.sql.Timestamp;
 
-import com.skill.India.common.BaseDto;
+import com.wastemanagement.common.BaseDto;
+
 
 /**
  * The Class PetDto.
