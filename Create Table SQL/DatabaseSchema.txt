@@ -1,0 +1,121 @@
+----------------------------------------------------------------------------------------Brainiacs_3.4------------------------------------------------------------------------------------------
+//Creating the database
+create database waste_managment
+
+// Creating user for the access of waste_managment
+create user 'bulk_generator'@'localhost' identified by 'password';
+create user 'aggregator'@'localhost' identified by 'password';
+create user 'nagar_nigam'@'localhost' identified by 'password';
+
+//Permission required for the individual user
+Aggregator- Grant insert,select,update on waste_managment.* to 'username'@'localhost';
+Bulk-Generator- Grant insert,select,update on waste_managment.* to 'username'@'localhost';
+Nagar_Nigam- Grant all on waste_managment.* to 'username'@'localhost';
+
+//creating triggers for the inspectedIndustries(bulk_generator).
+//This will automate the process of adding the industry in nagar nigam database once the industry is approved by the nagar nigam
+CREATE TRIGGER passbulk
+    after UPDATE ON pending_bulk_waste
+    FOR EACH ROW 
+BEGIN
+    INSERT INTO bulk_waste
+    SET bulk_gst_no = old.bulk_gst_no,
+    industry_name= old.industry_name,
+	License_no= old.License_no,
+	Waste_type= old.Waste_type,
+	Industry_type= old.Industry_type,
+	Address= old.Address,
+	Quantity= old.Quantity,
+	email= old.email,
+	phone_no= old.phone_no,
+	Ratings= old.Ratings,
+	password=old.password;
+	 END$$
+	
+//creating triggers for the inspectedIndustries(aggregator).
+//This will automate the process of adding the industry in nagar nigam database once the industry is approved by the nagar nigam
+CREATE TRIGGER passagg
+    after UPDATE ON pending_aggregator
+    FOR EACH ROW 
+BEGIN
+    INSERT INTO aggregator
+    SET Aggr_Gst_No = old.Aggr_Gst_No,
+    industry_name= old.industry_name,
+	License_no= old.License_no,
+	Waste_type= old.Waste_type,
+	Industry_type= old.Industry_type,
+	Address= old.Address,
+	Dumping_area= old.Dumping_area,
+	email= old.email,
+	phone_no= old.phone_no,
+	Ratings= old.Ratings,
+password=old.password;
+     END$$	
+	 
+	// creating table for pending_bulk_waste
+	CREATE TABLE pending_bulk_waste (
+    bulk_gst_no varchar(20) NOT NULL,
+    industry_name varchar(20),
+	License_no varchar(20),
+	Waste_type varchar(20),
+	Industry_type varchar(20),
+	Address varchar(20),
+	Quantity int,
+	email varchar(20),
+	phone_no varchar(10),
+	Ratings varchar(20),
+	status int,
+password varchar(30),
+    PRIMARY KEY (bulk_gst_no)
+);
+
+	// creating table for bulk_waste
+		CREATE TABLE bulk_waste (
+    bulk_gst_no varchar(20) NOT NULL,
+    industry_name varchar(20),
+	License_no varchar(20),
+	Waste_type varchar(20),
+	Industry_type varchar(20),
+	Address varchar(20),
+	Quantity int,
+	email varchar(20),
+	phone_no varchar(10),
+	Ratings varchar(20),
+	status int,
+password varchar(30),
+    PRIMARY KEY (bulk_gst_no)
+);
+
+		// creating table for pending_aggregator
+	CREATE TABLE pending_aggregator(
+    aggr_gst_no varchar(20) NOT NULL,
+    industry_name varchar(20),
+	License_no varchar(20),
+	Waste_type varchar(20),
+	Industry_type varchar(20),
+	Address varchar(20),
+	dumping_area varchar(50),
+	email varchar(20),
+	phone_no varchar(10),
+	Ratings varchar(20),
+	status int,
+	password varchar(30),
+    PRIMARY KEY (aggr_gst_no)
+);
+
+	// creating table for aggregator
+		CREATE TABLE bulk_waste (
+   aggr_gst_no varchar(20) NOT NULL,
+    industry_name varchar(20),
+	License_no varchar(20),
+	Waste_type varchar(20),
+	Industry_type varchar(20),
+	Address varchar(20),
+	dumping_area varchar(50),
+	email varchar(20),
+	phone_no varchar(10),
+	Ratings varchar(20),
+	status int,
+	password varchar(30),
+    PRIMARY KEY (aggr_gst_no)
+);
