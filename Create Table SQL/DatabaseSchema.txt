@@ -81,7 +81,7 @@ password varchar(30),
 	email varchar(20),
 	phone_no varchar(10),
 	Ratings varchar(20),
-	status int,
+
 password varchar(30),
     PRIMARY KEY (bulk_gst_no)
 );
@@ -115,7 +115,7 @@ password varchar(30),
 	email varchar(20),
 	phone_no varchar(10),
 	Ratings varchar(20),
-	status int,
+
 	password varchar(30),
     PRIMARY KEY (aggr_gst_no)
 );
