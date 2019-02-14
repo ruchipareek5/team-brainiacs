@@ -2,23 +2,26 @@
 //Creating the database
 create database waste_managment
 
+
 // Creating user for the access of waste_managment
 create user 'bulk_generator'@'localhost' identified by 'password';
 create user 'aggregator'@'localhost' identified by 'password';
 create user 'nagar_nigam'@'localhost' identified by 'password';
+
 
 //Permission required for the individual user
 Aggregator- Grant insert,select,update on waste_managment.* to 'username'@'localhost';
 Bulk-Generator- Grant insert,select,update on waste_managment.* to 'username'@'localhost';
 Nagar_Nigam- Grant all on waste_managment.* to 'username'@'localhost';
 
+
 //creating triggers for the inspectedIndustries(bulk_generator).
 //This will automate the process of adding the industry in nagar nigam database once the industry is approved by the nagar nigam
 CREATE TRIGGER passbulk
-    after UPDATE ON pending_bulk_waste
+    after UPDATE ON pending_bulk_waste_generator
     FOR EACH ROW 
 BEGIN
-    INSERT INTO bulk_waste
+    INSERT INTO bulk_waste_generator
     SET bulk_gst_no = old.bulk_gst_no,
     industry_name= old.industry_name,
 	License_no= old.License_no,
@@ -31,6 +34,7 @@ BEGIN
 	Ratings= old.Ratings,
 	password=old.password;
 	 END$$
+	
 	
 //creating triggers for the inspectedIndustries(aggregator).
 //This will automate the process of adding the industry in nagar nigam database once the industry is approved by the nagar nigam
@@ -52,8 +56,9 @@ BEGIN
 password=old.password;
      END$$	
 	 
-	// creating table for pending_bulk_waste
-	CREATE TABLE pending_bulk_waste (
+	 
+	// creating table for pending_bulk_waste_generator
+	CREATE TABLE pending_bulk_waste_generator (
     bulk_gst_no varchar(20) NOT NULL,
     industry_name varchar(20),
 	License_no varchar(20),
@@ -69,8 +74,8 @@ password varchar(30),
     PRIMARY KEY (bulk_gst_no)
 );
 
-	// creating table for bulk_waste
-		CREATE TABLE bulk_waste (
+	// creating table for bulk_waste_generator
+		CREATE TABLE bulk_waste_generator (
     bulk_gst_no varchar(20) NOT NULL,
     industry_name varchar(20),
 	License_no varchar(20),
@@ -81,8 +86,7 @@ password varchar(30),
 	email varchar(20),
 	phone_no varchar(10),
 	Ratings varchar(20),
-
-password varchar(30),
+	password varchar(30),
     PRIMARY KEY (bulk_gst_no)
 );
 
@@ -115,7 +119,78 @@ password varchar(30),
 	email varchar(20),
 	phone_no varchar(10),
 	Ratings varchar(20),
-
 	password varchar(30),
     PRIMARY KEY (aggr_gst_no)
+);
+
+//creating table for Auction_apply
+CREATE TABLE Auction_apply (
+    auction_id varchar(20) NOT NULL,
+    aggr_gst_no varchar(20),
+    date_of_auction date,
+	auction_quantity int,
+	base_ammount int,
+	address varchar(50),
+    PRIMARY KEY (auction_id),
+    FOREIGN KEY (aggr_gst_no) REFERENCES aggregator(aggr_gst_no)
+);
+
+//creating table for bid_auction
+CREATE TABLE bid_auction(
+    bid_auction_id varchar(20) NOT NULL,
+    bulk_gst_no varchar(20),
+    auction_id varchar(20),
+	bidding_ammount int,
+	action varchar(5),
+    PRIMARY KEY (bid_auction_id),
+    FOREIGN KEY (bulk_gst_no) REFERENCES bulk_waste_generator(bulk_gst_no),
+	FOREIGN KEY (auction_id) REFERENCES Auction_apply(auction_id)
+	
+);
+
+//creating table for Request_Collection
+CREATE TABLE Request_Collection(
+    collection_id varchar(20) NOT NULL,
+    bulk_gst_no varchar(20),
+    date_of_collection date,
+	waste_type varchar(20);
+	waste_quantity int,
+	address varchar(50),
+    PRIMARY KEY (collection_id),
+    FOREIGN KEY (bulk_gst_no) REFERENCES bulk_waste_generator(bulk_gst_no)
+);
+
+// creating table for approve_collection
+CREATE TABLE approve_collection(
+    approve_collection_id varchar(20) NOT NULL,
+	collection_id varchar(20),
+	aggr_gst_no varchar(20),
+	action varchar(5),
+    PRIMARY KEY (approve_collection_id),
+    FOREIGN KEY (aggr_gst_no) REFERENCES aggregator(aggr_gst_no),
+	FOREIGN KEY (collection_id) REFERENCES Request_Collection(collection_id)
+	
+);
+
+//creating table for suggestions
+CREATE TABLE suggestions(
+    suggest_id varchar(20) NOT NULL,
+	bulk_gst_no varchar(20),
+	description varchar(200),
+	summary varchar(200),
+    PRIMARY KEY (suggest_id),
+    FOREIGN KEY (bulk_gst_no) REFERENCES bulk_waste_generator(bulk_gst_no)	
+);
+
+//creating table for collaborate_industry
+CREATE TABLE collaborate_industry(
+    collaborate_id varchar(10) NOT NULL,
+	suggest_id varchar(20),
+	aggr_gst_no varchar(20),
+	inspection varchar(5),
+	suggestion varchar(200),
+    PRIMARY KEY (collaborate_id),
+    FOREIGN KEY (aggr_gst_no) REFERENCES aggregator(aggr_gst_no),
+    FOREIGN KEY (suggest_id) REFERENCES suggestions(suggest_id)
+	
 );
